@@ -14,6 +14,11 @@ public class TitleUIManager : MonoBehaviour
     [SerializeField] private Button _btnKey;
     [SerializeField] private Button _btnOption;
 
+    [Header("Close Buttons")]
+    [SerializeField] private Button _btnCloseKeyBoard;
+    [SerializeField] private Button _btnCloseOption;
+
+
     private void Start()
     {
         InitializeUI();
@@ -30,6 +35,10 @@ public class TitleUIManager : MonoBehaviour
         if (_btnGameEnd != null) _btnGameEnd.onClick.AddListener(OnGameEndClicked);
         if (_btnKey != null) _btnKey.onClick.AddListener(OnKeyClicked);
         if (_btnOption != null) _btnOption.onClick.AddListener(OnOptionClicked);
+
+        // 설명창 닫기 위한 추가부분 : X버튼 클릭시 설명창+옵션창 닫기
+        if (_btnCloseKeyBoard != null) _btnCloseKeyBoard.onClick.AddListener(OnCloseKeyBoardClicked);
+        if (_btnCloseOption != null) _btnCloseOption.onClick.AddListener(OnCloseOptionClicked);
     }
 
     private void OnGameStartClicked()
@@ -62,5 +71,16 @@ public class TitleUIManager : MonoBehaviour
         // OptionHelp 패널 활성화, 다른 패널이 열려있다면 닫기
         _optionHelpPanel.SetActive(true);
         _keyBoardHelpPanel.SetActive(false);
+    }
+
+    // 추가:창 닫기
+    private void OnCloseKeyBoardClicked()
+    {
+        _keyBoardHelpPanel.SetActive(false); // 패널 비활성화
+    }
+
+    private void OnCloseOptionClicked()
+    {
+        _optionHelpPanel.SetActive(false); // 패널 비활성화
     }
 }
