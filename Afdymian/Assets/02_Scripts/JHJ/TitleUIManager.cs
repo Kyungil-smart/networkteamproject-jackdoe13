@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+// using UnityEngine.SceneManagement;
 
 public class TitleUIManager : MonoBehaviour
 {
@@ -43,10 +43,10 @@ public class TitleUIManager : MonoBehaviour
 
     private void OnGameStartClicked()
     {
-        Debug.Log("로딩 씬으로 이동");
-        // 일단 로딩 씬의 이름은 LoadingScene으로 대체함
-        // 나중에 File -> Build Settings에 해당 씬이 등록할 것
-        SceneManager.LoadScene("LoadingScene"); 
+        Debug.Log("GameStart 클릭됨 -> TitleScene으로 이동");
+        
+        // 💡 이 부분을 다시 SceneLoadManager를 호출하도록 수정!
+        SceneLoadManager.Instance.LoadScene(SceneNames.Title);
     }
 
     private void OnGameEndClicked()

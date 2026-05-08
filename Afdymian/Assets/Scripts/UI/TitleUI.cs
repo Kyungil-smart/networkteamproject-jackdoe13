@@ -49,7 +49,9 @@ public class TitleUI : MonoBehaviour
             await AuthService.InitializeAsync();
             LobbyManager.Instance.SetPlayerName(GetPlayerName());
             SetStatus("로비로 이동 중...");
-            SceneLoader.LoadLocal(SceneId.Lobby);
+            // SceneLoader.LoadLocal(SceneId.Lobby);
+            // SceneLoadManager.cs가 되게 하기 위해 해당 부분을 수정함
+            SceneLoadManager.Instance.LoadScene(SceneNames.Lobby); // 만약 충돌시 알려주세요.
         }
         catch (Exception e)
         {
