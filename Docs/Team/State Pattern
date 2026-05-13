@@ -1,1 +1,11 @@
-State Pattern
+## State Pattern
+
+1. **Player Controller**에서 **Action**을 입력받는다.
+2. 전환 조건이 만족되면, 순수 C#인 **State Machine**이 주도하여 기존 상태를 깔끔하게 **Exit**하고 새로운 **State**를 **시작(Enter)**한다.
+3. **Update**에서 **State**가 동작한다.
+
+
+
+---
+### 궁금한 점:
+1. **MonoBehaviour**나 **Player Controller**와 **State Machine**의 상속 관계를 모르겠습니다.
