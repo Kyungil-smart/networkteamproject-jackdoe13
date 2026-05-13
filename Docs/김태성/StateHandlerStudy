@@ -18,6 +18,8 @@
 
 ![alt text](image.png)
 
+monobehavior를 상속받아 unity lifecycle를 따르는 함수가 실제 로직을 가지고 있고, 이 함수를 각각의 인터페이스에서 실행시키는 구조로 StateMachine은 player에게서 행동을 입력받았을 때 interface를 갈아끼우는 일을 담당한다. 
+
 **학습내용**
 
 별도의 프로젝트를 생성하여 패키지를 import하고 실행시킨 뒤 콘솔창에서 페이즈변경 로직 작동확인
