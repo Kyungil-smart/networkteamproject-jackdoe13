@@ -1,0 +1,19 @@
+## MonoBehaviour와 일반 C# 클래스의 차이점.
+
+|기능|MonoBehaviour|일반 C# 클래스|
+|:---:|:---:|:---:|
+|GameObject 부착|O|X|
+|Inspector 표시|O|X|
+|Unity 생명주기 함수 사용|O|X|
+|New 키워드|X(AddComponent())|O|
+|성능(메모리)|무거움|가벼움|
+|핵심 목적|게임 오브젝트의 동작제어|로직/데이터처리|
+
+## MonoBehaviour와 일반 C# 클래스의 객체 생성 차이점.
+
+**MonoBehaviour**: MonoBehaviour를 상속받는 클래스는 객체를 생성할때 Instantiate를 사용  
+- *MonoBehaviour에서는 New키워드 사용시 에러 발생. 사용 금지*
+- 왜 충돌이 나는지는 강사님한테 듣자!
+
+**일반 C# 클래스**: New(연산자) 키워드 사용
+
