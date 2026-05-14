@@ -1,0 +1,17 @@
+1. 일반 C# Script (Class)
+    - Unity 생명주기를 따르지 않음 
+2. Monobehaviour를 상속받은 Script (Class)
+    - Monobehaviour Class는 모든 Unity Script가 파생되는 기본 Class
+    - Editor에서 Game Object에 Script 연결하는 framework 제공
+    - 유용한 Start(), Update() 등 이벤트 제공
+    - Coroutine 을 시작,중지 및 관리 가능 (비동기 방식)
+    - Rigidbody, collider 등 사용가능
+3. 일반 Class의 Instance 생성 방법
+    - new 연산자를 사용해 생성
+    - 예) int n = new int();
+4. Monobehaviour를 상속 받은 Class의 Prefab, Instance 생성 방법
+    - Instantiate 함수를 이용함
+    - 인자로는 (Object original, Vector3 position, Quaternion rotation)
+    - 인자 순서대로 생성할 객체, 생성 위치, 생성시 회전 상태
+
+
