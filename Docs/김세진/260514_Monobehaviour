@@ -13,5 +13,19 @@
     - Instantiate 함수를 이용함
     - 인자로는 (Object original, Vector3 position, Quaternion rotation)
     - 인자 순서대로 생성할 객체, 생성 위치, 생성시 회전 상태
+5. 실습 코드
+'''csharp
+using UnityEngine;
 
+public class test : MonoBehaviour
+{
+    public GameObject a;
+    public void Start()
+    {
+        Instantiate(a, Vector2.zero, Quaternion.identity);
+    }
+    
+}
+
+'''
 
