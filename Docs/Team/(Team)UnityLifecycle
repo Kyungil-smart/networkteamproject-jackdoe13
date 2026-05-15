@@ -1,0 +1,65 @@
+## Unity Lifecycle
+
+1. 작성일: 2026-05-15  
+2. 작성자: 최경선  
+3. 사용 환경: Unity 6.3  
+4. 학습 목표: Unity Lifecycle(유니티 생명주기)에 대한 이해
+5. 구현 내용 및 핵심 로직  
+    - 주요코드
+   ```
+    public class test : MonoBehaviour
+    {
+        public void Awake()
+        {
+           Debug.Log("Awake");
+        }
+
+        public void OnEnable()
+        {
+           Debug.Log("OnEnable");
+        }
+
+        public void Start()
+        {
+            Debug.Log("Start");
+        }
+
+        public void FixedUpdate()
+        {
+            Debug.Log("FixedUpdate");
+        }
+
+        public void Update()
+        {
+            Debug.Log("Update");
+        }
+
+        public void OnDisable()
+        {
+            Debug.Log("OnDisable");
+        }
+
+        public void OnDestroy()
+        {
+            Debug.Log("OnDestroy");
+        }
+    }
+
+   ```
+
+    - 구조 선택 이유  
+    가장 기본적인 이벤트 함수이기에 선택. 
+
+6. [오류 발생 시]
+    - 발생한 문제 - (없음)
+    - 해결과정
+
+7. 코멘트
+    - 배운 점     
+      - 게임 로직이 엉키지않게 설계하고 이벤트 함수들의 실행순서에 대해 조금 더 이해할 수 있었다.
+      - Debug.Log로 작동 시 상태 출력 하는것을 좀 더 익힘.
+      - ###### 김세진: 사장님이 맛있고 음식이 친절해요
+    - 개선 방향 제시
+      - 추후 애니메이션과 코루틴을 사용할 때 이를 참고해서 학습하면 좋을 것 같다.
+    - 질문 사항
+      - 코드 로직 순서가 바뀌어도 Lifecycle대로 실행이 되는가?
