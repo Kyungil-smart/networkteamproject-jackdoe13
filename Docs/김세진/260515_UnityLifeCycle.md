@@ -1,8 +1,6 @@
 1. 실습 코드 작성
-'''csharp
-using System;
-using UnityEngine;
 
+```
 public class test : MonoBehaviour
 {
     public void Awake()
@@ -46,9 +44,10 @@ public class test : MonoBehaviour
     }
 
 }
-'''
+```
 ![alt text](image.png)
-2. 응용 가능한 목록 작성
+
+1. 응용 가능한 목록 작성
 
 Awake(): 씬이 시작할 때(오브젝트마다 한 번) 호출
  - start() 함수 전에 호출
@@ -79,21 +78,21 @@ OnDisable(): 오브젝트 마지막 프레임에 대해 모든 프레임 업데�
 OnDestroy(): 씬의 활성화된 모든 오브젝트에서 호출
 - 동작이 비활성화되거나 비활성 상태일 때 호출됨
 
-3. 구현 순서 풀어보기 (흐름도 작성)
-Awake()
-OnEnable()
-(첫 번째 씬로드)
-Start()
-(첫 번째 프레임 업데이트 전에)
------------Initialization
-FixedUpdate()
------------Physics
-Update()
-LateUpdate()
------------Game logic
-OnDisable()
-OnDestroy()
------------Decommissioning
+3. 구현 순서 풀어보기 (흐름도 작성)  
+Awake()  
+OnEnable()  
+(첫 번째 씬로드)  
+Start()  
+(첫 번째 프레임 업데이트 전에)  
+-----------Initialization  
+FixedUpdate()  
+-----------Physics  
+Update()  
+LateUpdate()  
+-----------Game logic  
+OnDisable()  
+OnDestroy()  
+-----------Decommissioning  
 
 4. 추가 공부 필요한 목록
 - OnTrigger
