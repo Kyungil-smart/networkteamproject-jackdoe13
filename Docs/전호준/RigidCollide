@@ -1,0 +1,67 @@
+---
+
+### 1. 충돌을 위한 필수 준비물 2가지
+
+유니티에서 두 오브젝트가 충돌을 인식하려면 다음 두 가지 컴포넌트가 필요합니다.
+
+1. **`Collider` :** 오브젝트의 '껍데기'이자 충돌 범위. (BoxCollider, SphereCollider 등)
+2. **`Rigidbody` :** 오브젝트에 중력, 마찰력 등 '물리 법칙'을 적용하는 엔진.
+
+> 💡 **[절대 규칙]** 충돌 이벤트가 발생하려면, 충돌하는 두 오브젝트 모두에게 `Collider`가 있어야 하며, **둘 중 최소 하나에는 반드시 `Rigidbody`가 있어야 가능함.**
+
+---
+
+### 2. 충돌의 두 가지 종류: Collision vs Trigger
+
+#### A. 단단한 물리 충돌 (`OnCollision...`)
+
+캐릭터가 벽에 부딪혀서 길막을 당하거나, 바닥에 떨어져서 통통 튀기는 등 '물리적인 반발력'이 발생하는 진짜 충돌.
+
+* **조건:** 두 오브젝트 모두 `Collider`의 `Is Trigger` 체크가 **해제(False)** 되어 있어야 함.
+* **이벤트 함수:** `OnCollisionEnter`, `OnCollisionStay`, `OnCollisionExit`
+
+#### B. 영역 감지 및 통과 (`OnTrigger...`)
+
+캐릭터가 동전을 먹거나, 포탈 영역에 들어가거나, 함정 스위치를 밟는 등 물리적인 막힘 없이 **'통과'하면서 감지만** 하는 형태.
+
+* **조건:** 둘 중 최소 하나의 `Collider`에 **`Is Trigger`가 체크(True)** 되어 있어야 함.
+* **이벤트 함수:** `OnTriggerEnter`, `OnTriggerStay`, `OnTriggerExit`
+
+---
+
+### 3. 코드 작성 예시 (컨벤션 적용)
+
+```csharp
+using UnityEngine;
+
+public class PlayerCollisionManager : MonoBehaviour
+{
+    // 컨벤션 적용: 비공개 필드
+    private int _coinCount = 0;
+
+    // 1. 단단한 벽이나 적과 부딪혔을 때 (물리적 충돌)
+    // 매개변수 타입이 'Collision' 임에 주의
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            Debug.Log($"[물리 충돌]");
+        }
+    }
+
+    // 2. 아이템을 먹거나 포탈 영역에 들어갔을 때 (통과형 감지)
+    // 매개변수 타입이 'Collider' 임
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Coin"))
+        {
+            _coinCount++;
+            Debug.Log($"[영역 감지] 코인 획득.");
+            
+            // 먹은 코인 파괴
+            Destroy(other.gameObject); 
+        }
+    }
+}
+
+```
