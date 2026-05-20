@@ -62,7 +62,7 @@ public class Sporner : MonoBehaviour
    
 
    - 모르는 개념 기록해두기
-     - .
+     - 
      - 
  
    - 뭘 실수했는지 기록해두기
@@ -70,4 +70,7 @@ public class Sporner : MonoBehaviour
 
    - 해결 했을 시 해결 방법 기록.
      1. (실수 1번) OnEnable의 위치를 Start보다 앞쪽에 배치했다.
-     2. 
+
+---
+
+Awake와 OnDestroy는 오브젝트에 직접 영향받음

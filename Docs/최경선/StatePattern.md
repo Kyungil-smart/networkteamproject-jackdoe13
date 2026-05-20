@@ -38,3 +38,7 @@ Player Controller는 현재 상태에게 행동을 맡기고, State Pattern은 �
 Player Controller는 현재 연결된 State에게 행동을 맡긴다.
 
 각 State는 자신의 역할에 맞는 기능만 담당하며, 상황에 따라 다른 상태로 전환된다.
+
+---
+
+State Pattern 재분석 및 적용
