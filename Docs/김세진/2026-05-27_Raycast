@@ -1,0 +1,110 @@
+Raycast : 시작지점 -> 레이저 => 닿는 Object 검출하는 기능
+     - FPS 게임의 에임
+     - 게임 내 Object 선택과 상호작용
+Tag : 각 단일 Game Object를 식별하는 용도
+Layer : Object들의 그룹을 만들고 관리
+
+실습코드
+```csharp
+private void DetectObjectInFront() // 자신의 정면에 있는 오브젝트를 감시하는 메서드
+    {
+        Ray ray = new Ray(transform.position, transform.forward * _detectSightDistance);
+        RaycastHit hit; // 충돌체를 보관하는 구조체
+
+        if (Physics.Raycast(ray, out hit, _detectSightDistance))
+        {
+            Debug.Log($"{name} : {hit.transform.name} 발견!");
+        }
+    }
+```
+```csharp
+using System.Runtime.CompilerServices;
+using UnityEngine;
+
+public class ObjectManager : MonoBehaviour
+{
+    [SerializeField] private GameObject _characterPrefab;   // 캐릭터 프리팹
+    [SerializeField] private float _positionScope;  // 프리팹을 소환할 범위
+
+    private Camera _cam;    // 카메라
+    private CharacterController _target;    // 제어대상
+    private Transform _targetTransform;     // 제어대상의 트랜스폼
+    private Ray _ray;       // 레이
+
+    private void Awake()
+    {
+        Init();
+    }
+
+    private void Update()
+    {
+        TryGetObjectHandle();
+    }
+
+
+    private void Init()
+    {
+        _cam = Camera.main; // MainCamera로 설정되어 있는 카메라를 반환받아 참조
+
+        CreateObject(_characterPrefab).name = "Kim";
+        CreateObject(_characterPrefab).name = "Lee";
+        CreateObject(_characterPrefab).name = "Park";
+        
+    }
+
+
+    private GameObject CreateObject(GameObject prefab)      // 오브젝트를 생성하고 GameObject형으로 반환하는 함수
+    {
+        GameObject obj = Instantiate(prefab);
+        
+        obj.transform.position = new Vector3(
+            Random.Range(-_positionScope, _positionScope),
+            0f,
+            Random.Range(-_positionScope, _positionScope)
+            );
+        obj.transform.rotation = Quaternion.Euler(
+            0,
+            Random.Range(0, 360),
+            0
+        );
+        
+        return obj;
+    }
+
+
+    private void TryGetObjectHandle()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            _ray = _cam.ScreenPointToRay(Input.mousePosition);  // 카메라 기준 마우스 클릭 위치를 Ray로
+            RaycastHit hit;
+
+            if (Physics.Raycast(_ray, out hit))
+            {
+                if (_targetTransform == hit.transform)      // 같은 거 선택 시 Return
+                {
+                    return;
+                }
+
+                if (_target != null)                // Null일시 선택 해제
+                {
+                    _target.IsSelect = false;
+                }
+                _targetTransform = hit.transform;
+                _target = _targetTransform.GetComponent<CharacterController>();
+                if (_target != null)                // Null이 아닌지 다시 확인
+                {
+                    _target.IsSelect = true;
+                    Debug.Log($"{hit.transform.name} 선택!");
+                }
+
+                if (hit.transform.CompareTag("cube"))  // 선택한 오브젝트의 Tag가 cube면
+                {
+                    Debug.Log($"{hit.transform.name} 태그 출력!");
+                }
+            }
+        }
+    }
+}
+
+```
