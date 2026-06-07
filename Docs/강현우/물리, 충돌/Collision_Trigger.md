@@ -158,6 +158,8 @@
 - Is Trigger 체크: ON, 하나 이상의 오브젝트에 체크 필요
 - 목적: 물리 충돌
 
+## Collision, Trigger, Kinematic
+
 ## Collision 실습 1
 
 ```csharp
