@@ -1,0 +1,143 @@
+코루틴(Coroutine) : 함수의 실행을 일시정지 및 이어서 실행이 가능함
+- 일반 함수의 반환인 return 사용 X
+- 대신 yield 키워드 사용
+- yield 사용 시 사용이 일시 중지되어
+   -> 다른 코드 실행 또는 유니티에게 제어권을 반납
+   -> 다음 실행 시 중단점부터 이어서 실행
+- 비동기작업 X
+- 동기 작업 O (라이프 사이클 내 직렬 수행)
+- **사용이 끝나면 반드시 중지**
+- **코루틴을 변수에 담아서 사용**
+
+IEnumerator? -> Collection
+yield return? 코루틴 정지?
+캐싱?
+
+코루틴을 변수에 담아서 사용하는 이유는 
+코루틴이 클래스로 이뤄진 객체이고 코루틴 인스턴스가 메모리에 할당되어
+중복되어 사용이 될 수도 있기에 클래스의 필드로 캐싱해서 사용
+클래스의 초기화 과정에서 캐싱된 변수에 한 번만 할당하여 계속해서 재활용
+
+
+
+  <실습코드1>
+  ![alt text](<2026-06-04 10 46 41.jpg>)
+```csharp
+using System;
+using System.Collections;   // IEnumerator 사용 시 필요
+using UnityEngine;
+
+public class CoroutineTest : MonoBehaviour
+{
+    private void Start()
+    {
+        StartCoroutine(TestCoroutine());    // TestCoroutine 시작
+        // StopCoroutine("TestCoroutine");     yield break 대신 명시적으로 코루틴을 정지하는 코드
+        Debug.Log("start");
+    }
+
+    private void FixedUpdate()
+    {
+        Debug.Log("FixedUpdate");
+    }
+
+    private void Update()
+    {
+        Debug.Log("Update");
+    }
+    
+    private void LateUpdate()
+    {
+        Debug.Log("LateUpdate");
+    }
+
+    private IEnumerator TestCoroutine()
+    {
+        PrintColorLog("Start Coroutine");
+
+        yield return null;
+        PrintColorLog("yield return null");
+
+        yield return new WaitForSeconds(1.0f);
+        PrintColorLog("Wait for Seconds 1sec");
+
+        yield return new WaitForFixedUpdate();
+        PrintColorLog("Wait for FixedUpdate");
+
+        yield return new WaitForEndOfFrame();
+        PrintColorLog("Wait For End Of Frame");
+        
+        PrintColorLog("End Coroutine");
+        yield break;
+
+
+    }
+
+    private void PrintColorLog(string text)     // 로그 색깔 출력
+    {
+        Debug.Log($"<color=yellow>{text}</color>>");
+    }
+}
+```
+
+<실습코드2>
+![alt text](<2026-06-04 11 12 11.jpg>)
+```csharp
+using System.Collections;
+using UnityEngine;
+
+public class CubeController : MonoBehaviour
+{
+
+    [SerializeField] private float _coroutineDelay;
+    
+    private Coroutine _coroutine;
+    private WaitForSeconds _delay;
+
+    private void Awake()
+    {
+        Init();
+    }
+    
+    private void Init()
+    {
+        _delay = new WaitForSeconds(_coroutineDelay);
+        _coroutine = null;
+    }
+
+  
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            if (_coroutine == null)     // 실행되고 있는 _coroutine 코루틴이 없다면
+            {
+                _coroutine = StartCoroutine(CubeCoroutine());   // _coroutine 코루틴 실행
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            if (_coroutine != null)      // 실행되고 있는 _coroutine 코루틴이 있다면
+            {
+                StopCoroutine(_coroutine);  // _coroutine 코루틴 정지
+            }
+        }
+
+    }
+
+
+    private IEnumerator CubeCoroutine()
+    {
+        while (true)
+        {
+            Debug.Log("coroutine");
+            yield return _delay;
+            
+        }
+        
+    }
+}
+
+```
