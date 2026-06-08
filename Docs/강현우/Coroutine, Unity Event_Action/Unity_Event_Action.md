@@ -266,8 +266,10 @@
     ```
 
 2. 결과: 
+    
     a. Pet 이동 속도와 거리를 조정 후 유니티 실행 시 C를 눌러서 콜백하면 펫이 플레이어에게 설정한 멈추는 거리 맞게 멈추게 된다.
-    b. event를 inspector에 등록했기 때문에 inspector에서 OnPetCalled 설정을 해야 콜백이 가능.
+    
+    b. event를 inspector에 등록했기 때문에 inspector에서 OnPetCalled() 설정을 해야 콜백이 가능.
 
     ![alt text](image-2.png)
 
@@ -377,6 +379,121 @@
         }
     }
     ```
+
+2. 결과: 
+    
+    a. 코드로 event를 등록했기 때문에 Inspector에서 따로 OnPetCalled()을 설정안해도 콜백이 가능
+    
+    b. 유니티 실행 시 C를 누르면 플레이어가 펫에게 콜백하면 플레이어에게 접근하여 멈춤 거리 설정 값에 맞춰 멈춤.
+
+## 유니티 이벤트 실전 실습 1: 프로퍼티를 이용하여 이벤트를 Inspector에 등록
+
+1. 코드
+
+    a. 
+
+    ```csharp
+    using UnityEngine;
+    using UnityEngine.Events;
+
+    public class PlayerStats_Event : MonoBehaviour
+    {
+        // new 할당 없이 event 사용
+        // 프로퍼티를 통해 값이 바뀌면 원본 값도 변경
+        // 변경되면서 Unity Event를 실행
+        public UnityEvent OnHealthChanged;
+        private int _health;
+        public int Health
+        {
+            get => _health;
+            set 
+            { 
+                _health = value;
+                OnHealthChanged?.Invoke();
+            }
+        }
+
+        public UnityEvent OnManaChanged;
+        private int _mana;
+        public int Mana
+        {
+            get => _mana;
+            set 
+            { 
+                _mana = value; 
+                OnManaChanged?.Invoke();
+            }
+        }
+
+        public UnityEvent OnExpChanged;
+        private int _exp;
+        public int Exp
+        {
+            get => _exp;
+            set 
+            { 
+                _exp = value; 
+                OnExpChanged?.Invoke();
+            }
+        }
+    }
+    ```
+
+    b. 
+
+    ```csharp
+    using UnityEngine;
+
+    public class PlayerController_Event : MonoBehaviour
+    {
+        private PlayerStats_Event _playerStats;
+
+        private void Awake()
+        {
+            _playerStats = GetComponent<PlayerStats_Event>();
+        }
+
+        private void Update()
+        {
+            // 1을 누를 때 마다 체력 감소
+            if(Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                _playerStats.Health--;
+            }
+        }
+
+        public void PrintHealth()
+        {
+            Debug.Log($"Health : {_playerStats.Health}");
+        }
+    }
+    ```
+
+2. 결과: 
+    
+    a. 1을 누를 때 마다 체력이 1씩 감소되는 디버그를 콘솔로 호출
+    
+    b. event를 inspector에 등록은 간편하지만 기능이 많아지면 관리하기가 힘들다. 하지만 원하는 기능이 잘 작동되는지 확인 및 테스트하기 좋다.
+
+    c. 구독 및 해제: PlayerController_Event.cs에서 Awake() 아래 추가해서 사용
+    ```csharp
+    private void OnEnable()
+    {
+        // AddListener로 구독처리
+        _playerStats.OnHealthChanged.AddListener(PrintHealth);
+    }
+
+    private void OnDisable()
+    {
+        // RemoveListener로 구독해제
+        _playerStats.OnHealthChanged.RemoveListener(PrintHealth);
+    }
+    ```
+
+    ![alt text](image-3.png)
+
+
+## 유니티 이벤트 실전 실습 2: 
 
 ### 참고 자료
 
