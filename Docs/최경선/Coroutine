@@ -1,0 +1,45 @@
+## Coroutine
+
+1. 구현 해야할 기능에 대한 공부  
+    - Coroutine: 함수의 실행을 일시중지하고, 나중에 다시 이어서 실행할 수 있는 아주 유용하고 범용적으로 사용되는 개념
+
+   - 코드 이해 기록 남기기
+     1. 
+   ```
+    pravate IEunmerator Foo()
+   {
+      Debug.Log("코루틴 실행")
+
+      yield return_
+   }
+   
+   ㄴ 코루틴 함수가 실행되고 있는 와중에 yield return을 만날 시 함수가 '일시 정지' 됨. (내가 원할때까지)
+
+    pravate IEunmerator Foo()
+   {
+      Debug.Log("코루틴 실행)
+
+      yield return null;
+   }
+
+   yield return은 객체를 반환함.
+
+   ```
+   ```
+   yield return null;
+   // 다음 프레임 (업데이트 이후)
+
+   yield return new WaitForSeconds(0.2f);
+   // 원하는 시간만큼 대기 (업데이트 이후)
+
+   yield return new WaitForFixedUpdate();
+   // FixedUpdate 까지 대기 (FixedUpdate 이후)
+   ```
+  
+   - 모르는 개념 기록해두기  
+     1. 
+
+   - 뭘 실수했는지 기록해두기  
+     1. 
+
+   - 해결 했을 시 해결 방법 기록.  
