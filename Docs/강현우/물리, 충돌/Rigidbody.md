@@ -4,7 +4,7 @@
 1. 중력, 힘, 충동, 밀림 같은 물리 계산을 가능하게 하는 컴포넌트
 2. Rigidbody는 고정 시간 물리 시스템으로 항상 FixedUpdate에서 호출
 3. 기본적으로 클래스로 구현
-4. velocit, angularVelocity 등과 같은 프로퍼티를 호출해 제어 가능
+4. velocityy, angularVelocity 등과 같은 프로퍼티를 호출해 제어 가능
 
 ## 1-2 특징
 
