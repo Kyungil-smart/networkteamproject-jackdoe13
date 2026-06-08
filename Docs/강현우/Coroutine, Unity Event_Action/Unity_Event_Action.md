@@ -177,7 +177,7 @@
     L. 캡슐화가 되지 않음 (외부에서 완전한 제어 가능)
     ```
 
-## 유니티 이벤트 실습 1: 플레이어가 펫을 호출하면 펫이 플레이어를 향해 이동
+## 유니티 이벤트 실습 1: 이벤트를 Inspector에 등록
 
 1. 코드
 
@@ -265,10 +265,118 @@
     }
     ```
 
+2. 결과: 
+    a. Pet 이동 속도와 거리를 조정 후 유니티 실행 시 C를 눌러서 콜백하면 펫이 플레이어에게 설정한 멈추는 거리 맞게 멈추게 된다.
+    b. event를 inspector에 등록했기 때문에 inspector에서 OnPetCalled 설정을 해야 콜백이 가능.
+
+    ![alt text](image-2.png)
 
     ![alt text](image.png)
 
     ![alt text](image-1.png)
+
+## 유니티 이벤트 실습 2: 이벤트를 코드를 통해 등록
+
+1. 코드
+
+    ```csharp
+    using UnityEngine;
+    using UnityEngine.Events;
+    using System.Collections;
+
+    public class PlayerController : MonoBehaviour
+    {
+        // 이벤트는 클래스로 구성되어 있으며 인스턴스로 생성해서 사용.
+        // Unity Action은 델리게이트로 구현되어 있음. 
+        // 즉 델리게이트와 이벤트처럼 함수를 등록해 놓고 이벤트 발생 시 등록된 함수들을 실행
+        [field: SerializeField] public UnityEvent OnPetCalled { get; private set; } = new();
+
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.C))
+            {
+                CallPet();
+            }
+        }
+
+        private void CallPet()
+        {
+            // 유니티 이벤트를 Invoke로 실행
+            OnPetCalled.Invoke();
+        }
+
+    }
+    ```
+
+    ```csharp
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
+
+    public class PetController : MonoBehaviour
+    {
+        [SerializeField] private PlayerController _player;
+        [SerializeField] private float _moveSpeed;
+        [SerializeField] private float _moveStopDistance;
+        private Coroutine _moveCoroutine;
+
+        private void Awake()
+        {
+            Init();
+        }
+    
+        // 객체가 파괴될 때 등록한 함수를 다시 삭제하여 참조 관계를 끊어줌.
+        // OnDestroy() 함수로 가비지 컬렉터를 회수하여 메모리 누수 방지
+        private void OnDestroy()
+        {
+            _player.OnPetCalled.RemoveListener(MoveToPlayer);
+        }
+    
+        // OnPetCalled에 함수를 등록하여 가비지 컬렉터를 통해 회수되지 않을 수 있습니다.
+        // 이 경우들이 쌓이면 메모리 누수 발생.
+        private void Init()
+        {
+            _player.OnPetCalled.AddListener(MoveToPlayer);
+        }
+    
+        // inspector가 아닌 코드로 이벤트 등록
+        private void MoveToPlayer()
+        { 
+            if(_moveCoroutine == null)
+            {
+                _moveCoroutine = StartCoroutine(MoveToTarget(_player.transform));
+            }
+        }
+
+        // 코루틴과 반복문을 활용.
+        // 내부에서 목표 지점과 자신의 위치 사이의 거리가 필드 변수보다 가까우면 Coroutine을 정지
+        private IEnumerator MoveToTarget(Transform target)
+        {
+            while(true)
+            {
+                float distance = Vector3.Distance(
+                    target.transform.position,
+                    transform.position
+                    );
+
+                // 거리가 멈춰야 할 거리에 도달 시 코루틴이 null이되며 코루틴 잠시 정지
+                if(distance <= _moveStopDistance)
+                {
+                    _moveCoroutine = null;
+                    yield break;
+                }
+
+                transform.position = Vector3.MoveTowards(
+                    transform.position,
+                    target.position,
+                    _moveSpeed * Time.deltaTime
+                    );
+
+                yield return null;
+            }
+        }
+    }
+    ```
 
 ### 참고 자료
 
