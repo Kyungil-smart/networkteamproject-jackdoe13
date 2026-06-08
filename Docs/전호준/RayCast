@@ -1,0 +1,76 @@
+# 📚 [물리/Raycast] 1인칭 시점 태그(Tag) 기반 객체 식별 시스템
+
+**작성일:** 2026-06-04
+**사용 환경:** Unity 6 / VS Code
+
+## 1. 학습 목표 (Objective)
+
+* 1인칭 시점(FPS 뷰)에서 화면 정중앙을 기준으로 레이캐스트를 발사하는 방법을 학습하기.
+* `Tag`를 활용하여 대상의 종류를 식별하고 기초적인 상호작용 로직을 구현해야 함.
+
+## 2. 구현 내용 및 핵심 로직 (Implementation)
+
+* **1인칭 조준:** `ScreenPointToRay` 대신 `ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f))`를 사용하여 화면 해상도나 마우스 커서 위치에 상관없이 항상 **화면 정중앙** 에서 레이캐스트 광선을 쏘도록 처리함.
+* **태그 필터링:** 광선에 가장 먼저 맞은 물리 충돌체(Collider)를 확인한 후, `CompareTag()` 함수를 통해 지정한 태그(예: `Interactable`)와 일치하는지 사후 검사함. -> 일치 안하면 X
+* **간소화 (프로토타입):** 별도의 데이터 스크립트 연결 없이, 태그가 일치하면 해당 오브젝트의 이름(name)을 로그로 띄우는 형태로 경량화.
+
+## 3. 핵심 코드 (Code Snippet)
+
+```csharp
+using UnityEngine;
+
+public class TagRaycastManager : MonoBehaviour
+{
+    // 비공개 필드는 _접두사와 camelCase 방식으로 사용
+    // 특정 태그 'Interactable'만 특정해둠+레이캐스트 길이 설정
+    [SerializeField] private string _targetTag = "Interactable";
+    [SerializeField] private float _rayDistance = 100f;
+    
+    // 메인 카메라의 정보를 담아둘 비공개 필드(인스펙터 창에 노출할 필요 없어서 간소화시킴)
+    private Camera _mainCamera;
+
+    private void Awake()
+    {
+        // Camera.main 캐싱 (최적화)
+        _mainCamera = Camera.main;
+    }
+
+    private void Update()
+    {
+        // 좌클릭 시 레이캐스트 발사
+        if (Input.GetMouseButtonDown(0))
+        {
+            CheckTargetHit();
+        }
+    }
+
+    private void CheckTargetHit()
+    {
+        // 1. 화면 정중앙(Viewport의 0.5, 0.5)을 기준으로 3D 공간을 향하는 광선 생성
+        Ray ray = _mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        RaycastHit hitInfo;
+
+        // 2. 레이캐스트 발사 (태그 방식이므로 레이어 마스크 필터링 없이 무조건 닿는 물체 검사)
+        if (Physics.Raycast(ray, out hitInfo, _rayDistance))
+        {
+            // 3. 부딪힌 물체의 태그가 설정한 태그와 일치하는지 비교 (최적화를 위해 CompareTag 사용)
+            if (hitInfo.collider.CompareTag(_targetTag))
+            {
+                Debug.Log($"타겟 확인: {hitInfo.collider.name}");
+            }
+            else
+            {
+                // 타겟이 아닌 물체(바닥, 장애물 등)를 맞췄을 때
+                Debug.Log($"{hitInfo.collider.name}는 타겟 아님");
+            }
+        }
+    }
+}
+
+```
+
+## 4. 회고 및 주의사항 (LayerMask와의 차이점)
+
+* **LayerMask 방식:** 레이저를 쏠 때 지정되지 않은 레이어는 완전히 투명하게 통과함. 성능이 매우 좋고 타겟 앞에 장애물이 있어도 무시하고 쏠 수 있음.
+* **Tag 방식:** 레이저를 쏘고 나서 부딪힌 대상이 맞는지 확인하는 구조. 따라서 **타겟 앞에 다른 투명한 벽이나 콜라이더가 겹쳐있으면 그곳에 레이캐스트가 막혀버려 타겟을 클릭할 수 없음**.
+* ➡ **결론:** 레벨 디자인 시 투명 벽이나 그런 것은 어떻게 짤지 고민해서 써야할 것. 또한 투명 벽 등은 홀로그램 등의 효과로 클릭 불가란 걸 확실히 알려야할 것으로 판단됨.
