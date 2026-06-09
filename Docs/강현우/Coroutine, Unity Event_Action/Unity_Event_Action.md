@@ -31,7 +31,7 @@
     ```
     private void Name(string name)
     {
-    Debug.Log(name);
+        Debug.Log(name);
     }
     -> string name이 매개변수
     ```
@@ -412,30 +412,6 @@
                 OnHealthChanged?.Invoke();
             }
         }
-
-        public UnityEvent OnManaChanged;
-        private int _mana;
-        public int Mana
-        {
-            get => _mana;
-            set 
-            { 
-                _mana = value; 
-                OnManaChanged?.Invoke();
-            }
-        }
-
-        public UnityEvent OnExpChanged;
-        private int _exp;
-        public int Exp
-        {
-            get => _exp;
-            set 
-            { 
-                _exp = value; 
-                OnExpChanged?.Invoke();
-            }
-        }
     }
     ```
 
@@ -475,7 +451,7 @@
     
     b. event를 inspector에 등록은 간편하지만 기능이 많아지면 관리하기가 힘들다. 하지만 원하는 기능이 잘 작동되는지 확인 및 테스트하기 좋다.
 
-    c. 구독 및 해제: PlayerController_Event.cs에서 Awake() 아래 추가해서 사용
+    c. 구독 및 해제를 사용해 코드로 관리: PlayerController_Event.cs에서 Awake() 아래 추가해서 사용. Inspector에 비해 관리하기 편하다.
     ```csharp
     private void OnEnable()
     {
@@ -493,7 +469,279 @@
     ![alt text](image-3.png)
 
 
-## 유니티 이벤트 실전 실습 2: 
+## 유니티 이벤트 실전 실습 2: 프로퍼티 코드로 이벤트 등록, UI Text로 능력치 나타내기
+
+1. 코드
+
+    a.
+
+    ```csharp
+    using UnityEngine;
+    using UnityEngine.Events;
+
+    public class PlayerStats_Event : MonoBehaviour
+    {
+        // new 할당 없이 event 사용
+        // 프로퍼티를 통해 값이 바뀌면 원본 값도 변경
+        // 변경되면서 Unity Event를 실행
+        public UnityEvent OnHealthChanged;
+        private int _health;
+        public int Health
+        {
+            get => _health;
+            set 
+            { 
+                _health = value;
+                OnHealthChanged?.Invoke();
+            }
+        }
+    }
+    ```
+
+    b.
+
+    ```csharp
+    using UnityEngine;
+    using TMPro;
+
+    public class HealthPointUI : MonoBehaviour
+    {
+        [SerializeField] private PlayerStats_Event _playerStats;
+        private TextMeshProUGUI _uiText;
+
+        private void Awake()
+        {
+            _uiText = GetComponent<TextMeshProUGUI>();
+        }
+
+        private void Start()
+        {
+            RefreshUI();
+        }
+
+        // 구독
+        private void OnEnable()
+        {
+            _playerStats.OnHealthChanged.AddListener(RefreshUI);
+        }
+
+        private void RefreshUI()
+        {
+            _uiText.text = $"HP : {_playerStats.Health}";
+        }
+    }
+    ```
+
+    c.
+
+    ```csharp
+    using UnityEngine;
+
+    public class PlayerController_Event : MonoBehaviour
+    {
+        private PlayerStats_Event _playerStats;
+
+        private void Awake()
+        {
+            _playerStats = GetComponent<PlayerStats_Event>();
+        }
+
+        private void Update()
+        {
+            // 1을 누를 때 마다 체력 감소
+            if(Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                _playerStats.Health--;
+            }
+        }
+    }
+    ```
+
+2. 결과
+
+    a. 1을 누를 떄 마낟 HP 1씩 감소
+
+    ![alt text](image-4.png)
+
+## 유니티 이벤트 실전 실습 3: 유니티 이벤트에 매개변수가 있는 함수를 등록, 제네릭 쓰듯이 유니티 이벤트 뒤에 <int, float 등등> 넣어 사용(코드로 이벤트 등록)
+
+1. 코드
+
+    a.
+
+    ```csharp
+    using UnityEngine;
+    using UnityEngine.Events;
+
+    public class PlayerStats_Event : MonoBehaviour
+    {
+        // new 할당 없이 event 사용
+        // 프로퍼티를 통해 값이 바뀌면 원본 값도 변경
+        // 변경되면서 Unity Event를 실행
+        // 이벤트에 매개변수 등록.
+        public UnityEvent<int> OnHealthChanged;
+        private int _health;
+        public int Health
+        {
+            get => _health;
+            set 
+            { 
+                _health = value;
+                OnHealthChanged?.Invoke(_health);
+            }
+        }
+    }
+    ```
+
+    b.
+
+    ```csharp
+    using UnityEngine;
+    using TMPro;
+
+    public class HealthPointUI : MonoBehaviour
+    {
+        [SerializeField] private PlayerStats_Event _playerStats;
+        private TextMeshProUGUI _uiText;
+
+        private void Awake()
+        {
+            _uiText = GetComponent<TextMeshProUGUI>();
+        }
+
+        private void Start()
+        {
+            RefreshUI(_playerStats.Health);
+        }
+
+        private void OnEnable()
+        {
+            _playerStats.OnHealthChanged.AddListener(RefreshUI);
+        }
+
+        private void RefreshUI(int health)
+        {
+            _uiText.text = $"HP : {_playerStats.Health}";
+        }
+    }
+    ```
+
+    c.
+
+    ```csharp
+    using UnityEngine;
+
+    public class PlayerController_Event : MonoBehaviour
+    {
+        private PlayerStats_Event _playerStats;
+
+        private void Awake()
+        {
+            _playerStats = GetComponent<PlayerStats_Event>();
+        }
+
+        private void Update()
+        {
+            // 1을 누를 때 마다 체력 감소
+            if(Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                _playerStats.Health--;
+            }
+        }
+    }
+    ```
+
+2. 결과
+
+    a. 코드로 이벤트 등록 및 이벤트에 매개변수를 넣으면 한 오브젝트에 여러 기능들을 넣어 필요에 따라 호출이 가능하고 데이터 관리가 편리하다.
+
+    ![alt text](image-5.png)
+
+## 유니티 이벤트 실전 실습 4: UI 갱신만 갖고 다른 외부 데이터의 징검다리 역할(코드로 이벤트 등록)
+
+1. 코드
+
+    a. 
+
+    ```csharp
+    using UnityEngine;
+    using UnityEngine.Events;
+
+    public class PlayerStats_Event : MonoBehaviour
+    {
+        // new 할당 없이 event 사용
+        // 프로퍼티를 통해 값이 바뀌면 원본 값도 변경
+        // 변경되면서 Unity Event를 실행
+        public UnityEvent<int> OnHealthChanged;
+        private int _health;
+        public int Health
+        {
+            get => _health;
+            set 
+            { 
+                _health = value;
+                OnHealthChanged?.Invoke(_health);
+            }
+        }
+    ```
+
+    b.
+
+    ```csharp
+    using UnityEngine;
+    using TMPro;
+
+    public class HealthPointUI : MonoBehaviour
+    {
+        private TextMeshProUGUI _uiText;
+
+        private void Awake()
+        {
+            _uiText = GetComponent<TextMeshProUGUI>();
+        }
+
+        public void RefreshUI(int health)
+        {
+            _uiText.text = $"HP : {health}";
+        }
+    }
+    ```
+
+    c.
+
+    ```csharp
+    using System;
+    using UnityEngine;
+
+    public class PlayerController_Event : MonoBehaviour
+    {
+        private PlayerStats_Event _playerStats;
+        [SerializeField] private HealthPointUI _healthPointUI;
+
+        private void Awake()
+        {
+            _playerStats = GetComponent<PlayerStats_Event>();
+        }
+
+        private void OnEnable()
+        {
+            _playerStats.OnHealthChanged.AddListener(
+                _healthPointUI.RefreshUI
+                );
+        }
+
+        private void Update()
+        {
+            // 1을 누를 때 마다 체력 감소
+            if(Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                _playerStats.Health--;
+            }
+        }
+    }
+    ```
+
+
 
 ### 참고 자료
 
