@@ -1,0 +1,21 @@
+## Animation
+
+1. 구현 해야할 기능에 대한 공부 
+    - FSM(유한 상태머신): 객체가 한번에 하나의 상태만 가질 수 있도록 제어하는 모델이자 논리시스템
+    ```
+    구조
+    현재 상태(State) + 조건(Parameter) -> 상태 전이(Transition)
+    ```
+  
+    1-1.Unity Animation
+    
+    - 컴포넌트
+        - Animation (Legacy)
+          - 단순한 클립 재생 (단발성 연출)
+          - .anim 파일
+        - Animator (New)
+          - 상태 전이가 활발한데 제어도 필요할때
+          - .controller 파일
+          - Parameter 탭 수치를 조절
+    
+    -Animation과 Animator가 둘 다 사용하는 것 -> Animation Clip

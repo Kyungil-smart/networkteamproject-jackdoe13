@@ -1,0 +1,12 @@
+## Unity Event
+
+1. 구현 해야할 기능에 대한 공부  
+    Unity Event: 
+
+    // 변수에 정수를 보관하고 싶으면 'int'  
+    private int value = 10;
+
+    // 변수에 함수를 보관하고 싶으면  
+    private UnityAction _actions;
+
+    
