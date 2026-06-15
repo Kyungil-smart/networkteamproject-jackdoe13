@@ -112,6 +112,8 @@
 
 1. Animation과 Animator가 둘 다 사용하는 것
 2. 객체의 움직임을 미리 정의한(저장한) 파일
+3. Animation을 사용시 컴퍼넌트에서 Debug를 legacy로 설정해준다.
+4. Animator를 사용시 컴포넌트에서 Loop time을 체크해준다.
 
 ## ⭐ Skinned Mesh Renderer 컴포넌트
 
