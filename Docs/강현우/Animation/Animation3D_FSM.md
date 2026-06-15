@@ -87,6 +87,8 @@
 5. Entry: 게임 시작 시 처음 에니매이션 작동 조건
 6. Make Transition: 화살표를 생성하여 각 상태에 전이
 7. Set as Layer Default State: 상태 진입 시 시작점.
+8. Any State : 현재 어떤 상태든 조건만 맞으면 해당 상태로 이동.
+9. Can Transition To Self : 현 상태 자기 지신을 다시 상태 반영할지 애니메이션 재시작 여부.
 
 ![alt text](image-7.png)
 
