@@ -1,3 +1,6 @@
+## StatePattern
+
+
 ![](https://raw.githubusercontent.com/Kyungil-smart/networkteamproject-jackdoe13/a57ebb12c531a62a45796bfb4ccab23439b2fa01/Docs/%EC%B5%9C%EA%B2%BD%EC%84%A0/%EC%83%81%ED%83%9C%ED%8C%A8%ED%84%B4.png)
 
 왼쪽의 '상황'은 플레이어에게 발생하는 입력이나 조건을 의미
@@ -42,3 +45,7 @@ Player Controller는 현재 연결된 State에게 행동을 맡긴다.
 ---
 
 State Pattern 재분석 및 적용
+
+---
+
+게임 기능이 늘어나면 조건문(if)을 늘리는게 아니라 상태(state)를 늘린다.

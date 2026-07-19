@@ -1,5 +1,7 @@
 Keyword : deligate, Unity Action, AddListener, RemoveListener
 
+![alt text](<2026-06-07 21 56 19.jpg>)
+
 실습코드1
 ```csharp
 using UnityEngine;
@@ -56,8 +58,6 @@ public class PetController : MonoBehaviour
             _moveCoroutine = StartCoroutine(MoveToTarget(_player.transform));
         }
     }
-
-
 
     private IEnumerator MoveToTarget(Transform target)
     {
